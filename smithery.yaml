@@ -1,0 +1,53 @@
+name: aihubmix-gpt-image-1
+description: AIHubMix GPT Image 1 MCP Server - 基于AIHubMix API的图像生成MCP服务器
+version: 1.0.0
+
+# MCP服务器配置
+mcp:
+  # 服务器类型：HTTP
+  transport: http
+  # 服务器端点
+  endpoint: http://localhost:8000
+  # 初始化端点
+  initialize_endpoint: /mcp/initialize
+  # 工具列表端点
+  tools_list_endpoint: /mcp/tools/list
+  # 工具调用端点
+  tools_call_endpoint: /mcp/tools/call
+
+# 部署配置
+deployment:
+  # 端口
+  port: 8000
+  # 主机
+  host: 0.0.0.0
+  # 环境变量
+  env:
+    - AIHUBMIX_API_KEY
+    - AIHUBMIX_BASE_URL
+    - AIHUBMIX_MODEL
+    - MCP_SERVER_NAME
+    - PORT
+    - HOST
+
+# 健康检查
+health_check:
+  endpoint: /health
+  interval: 30s
+  timeout: 10s
+
+# 标签
+tags:
+  - mcp-server
+  - image-generation
+  - aihubmix
+  - gpt-image-1
+  - python
+  - fastapi
+
+# 文档链接
+documentation:
+  - name: README
+    url: https://github.com/glowyardlighting/aihubmix-gpt-image-1/blob/master/README.md
+  - name: Quick Start
+    url: https://github.com/glowyardlighting/aihubmix-gpt-image-1/blob/master/QUICK_START.md

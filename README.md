@@ -130,6 +130,16 @@ claude mcp list
 
 ## 直接运行
 
+### HTTP 服务器（推荐用于 Smithery AI 部署）
+
+```bash
+python http_server.py
+```
+
+服务器将在 http://localhost:8000 启动，支持 HTTP MCP 协议。
+
+### Stdio 服务器（用于本地开发）
+
 ```bash
 python server.py
 ```
