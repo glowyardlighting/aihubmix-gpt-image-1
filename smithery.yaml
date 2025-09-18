@@ -8,6 +8,8 @@ mcp:
   transport: http
   # 服务器端点
   endpoint: http://localhost:8000
+  # 通用MCP协议端点
+  mcp_endpoint: /mcp
   # 初始化端点
   initialize_endpoint: /mcp/initialize
   # 工具列表端点

@@ -76,6 +76,88 @@ class AIHubMixImageHTTPMCPServer:
                 }
             }
         
+        @app.post("/mcp")
+        async def mcp_endpoint(request: Dict[str, Any]):
+            """通用MCP协议端点"""
+            method = request.get("method")
+            request_id = request.get("id")
+            
+            if method == "initialize":
+                return {
+                    "jsonrpc": "2.0",
+                    "id": request_id,
+                    "result": {
+                        "protocolVersion": "2024-11-05",
+                        "capabilities": {
+                            "tools": {},
+                            "resources": {},
+                            "prompts": {},
+                            "sampling": {}
+                        },
+                        "serverInfo": {
+                            "name": self.server_name,
+                            "version": "1.0.0"
+                        }
+                    }
+                }
+            elif method == "tools/list":
+                return {
+                    "jsonrpc": "2.0",
+                    "id": request_id,
+                    "result": {
+                        "tools": [
+                            {
+                                "name": "generate_image",
+                                "description": "使用 AIHubMix API 生成图像",
+                                "inputSchema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "prompt": {
+                                            "type": "string",
+                                            "description": "图像描述提示词"
+                                        },
+                                        "model": {
+                                            "type": "string",
+                                            "description": "使用的模型 (gpt-image-1)",
+                                            "default": self.model
+                                        },
+                                        "size": {
+                                            "type": "string",
+                                            "description": "图像尺寸",
+                                            "enum": ["256x256", "512x512", "1024x1024", "1792x1024", "1024x1792"],
+                                            "default": "1024x1024"
+                                        },
+                                        "n": {
+                                            "type": "integer",
+                                            "description": "生成图像数量 (1-10)",
+                                            "minimum": 1,
+                                            "maximum": 10,
+                                            "default": 1
+                                        },
+                                        "filename": {
+                                            "type": "string",
+                                            "description": "输出文件名 (不含扩展名)",
+                                            "default": "generated_image"
+                                        }
+                                    },
+                                    "required": ["prompt"]
+                                }
+                            }
+                        ]
+                    }
+                }
+            elif method == "tools/call":
+                return await self._handle_generate_image(request)
+            else:
+                return {
+                    "jsonrpc": "2.0",
+                    "id": request_id,
+                    "error": {
+                        "code": -32601,
+                        "message": f"未知方法: {method}"
+                    }
+                }
+        
         @app.post("/mcp/initialize")
         async def mcp_initialize(request: Dict[str, Any]):
             """MCP 初始化端点"""
@@ -97,12 +179,82 @@ class AIHubMixImageHTTPMCPServer:
                 }
             }
         
+        @app.get("/mcp/initialize")
+        async def mcp_initialize_get():
+            """MCP 初始化端点 (GET)"""
+            return {
+                "jsonrpc": "2.0",
+                "id": 1,
+                "result": {
+                    "protocolVersion": "2024-11-05",
+                    "capabilities": {
+                        "tools": {},
+                        "resources": {},
+                        "prompts": {},
+                        "sampling": {}
+                    },
+                    "serverInfo": {
+                        "name": self.server_name,
+                        "version": "1.0.0"
+                    }
+                }
+            }
+        
         @app.post("/mcp/tools/list")
         async def mcp_tools_list(request: Dict[str, Any]):
             """MCP 工具列表端点"""
             return {
                 "jsonrpc": "2.0",
                 "id": request.get("id"),
+                "result": {
+                    "tools": [
+                        {
+                            "name": "generate_image",
+                            "description": "使用 AIHubMix API 生成图像",
+                            "inputSchema": {
+                                "type": "object",
+                                "properties": {
+                                    "prompt": {
+                                        "type": "string",
+                                        "description": "图像描述提示词"
+                                    },
+                                    "model": {
+                                        "type": "string",
+                                        "description": "使用的模型 (gpt-image-1)",
+                                        "default": self.model
+                                    },
+                                    "size": {
+                                        "type": "string",
+                                        "description": "图像尺寸",
+                                        "enum": ["256x256", "512x512", "1024x1024", "1792x1024", "1024x1792"],
+                                        "default": "1024x1024"
+                                    },
+                                    "n": {
+                                        "type": "integer",
+                                        "description": "生成图像数量 (1-10)",
+                                        "minimum": 1,
+                                        "maximum": 10,
+                                        "default": 1
+                                    },
+                                    "filename": {
+                                        "type": "string",
+                                        "description": "输出文件名 (不含扩展名)",
+                                        "default": "generated_image"
+                                    }
+                                },
+                                "required": ["prompt"]
+                            }
+                        }
+                    ]
+                }
+            }
+        
+        @app.get("/mcp/tools/list")
+        async def mcp_tools_list_get():
+            """MCP 工具列表端点 (GET)"""
+            return {
+                "jsonrpc": "2.0",
+                "id": 1,
                 "result": {
                     "tools": [
                         {
