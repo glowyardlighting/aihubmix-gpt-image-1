@@ -120,7 +120,10 @@ class AIHubMixImageMCPServer:
                 "result": {
                     "protocolVersion": "2024-11-05",
                     "capabilities": {
-                        "tools": {}
+                        "tools": {},
+                        "resources": {},
+                        "prompts": {},
+                        "sampling": {}
                     },
                     "serverInfo": {
                         "name": self.server_name,
